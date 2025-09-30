@@ -13,7 +13,7 @@ except ModuleNotFoundError:
 # Page config
 st.set_page_config(page_title="🌐 SpeakEasy", layout="wide", page_icon="🌐")
 
-# Custom Fonts and Styling
+# Elegant Styling
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
@@ -21,7 +21,7 @@ html, body, [class*="css"]  {
     font-family: 'Roboto', sans-serif;
 }
 .stButton>button {
-    background-color: #4CAF50;
+    background-color: #008080;
     color: white;
     height: 3em;
     width: 100%;
@@ -37,39 +37,17 @@ html, body, [class*="css"]  {
 st.title("🌐 SpeakEasy")
 st.write("Translate text between languages instantly!")
 
-# Supported languages
+# Supported languages (expanded)
 language_codes = {
-    "English": "en",
-    "Hindi": "hi",
-    "French": "fr",
-    "Spanish": "es",
-    "German": "de",
-    "Chinese (Simplified)": "zh-CN",
-    "Chinese (Traditional)": "zh-TW",
-    "Japanese": "ja",
-    "Korean": "ko",
-    "Russian": "ru",
-    "Arabic": "ar",
-    "Portuguese": "pt",
-    "Italian": "it",
-    "Turkish": "tr",
-    "Dutch": "nl",
-    "Swedish": "sv",
-    "Norwegian": "no",
-    "Danish": "da",
-    "Finnish": "fi",
-    "Polish": "pl",
-    "Thai": "th",
-    "Vietnamese": "vi",
-    "Indonesian": "id",
-    "Greek": "el",
-    "Hebrew": "he",
-    "Bengali": "bn",
-    "Urdu": "ur",
-    "Malay": "ms",
-    "Filipino": "tl"
+    "English": "en", "Hindi": "hi", "French": "fr", "Spanish": "es",
+    "German": "de", "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW",
+    "Japanese": "ja", "Korean": "ko", "Russian": "ru", "Arabic": "ar",
+    "Portuguese": "pt", "Italian": "it", "Turkish": "tr", "Dutch": "nl",
+    "Swedish": "sv", "Norwegian": "no", "Danish": "da", "Finnish": "fi",
+    "Polish": "pl", "Thai": "th", "Vietnamese": "vi", "Indonesian": "id",
+    "Greek": "el", "Hebrew": "he", "Bengali": "bn", "Urdu": "ur",
+    "Malay": "ms", "Filipino": "tl"
 }
-
 language_options = list(language_codes.keys())
 
 # Session state for history
@@ -101,14 +79,14 @@ if st.button("Translate") and text:
             # Translate
             translation = GoogleTranslator(source=src_code, target=tgt_code).translate(text)
 
-            # Display translation in modern card
+            # Display translation in elegant card
             st.markdown(f"""
                 <div style="
-                    background-color:#FFFFFF;
-                    color:#000000;
+                    background-color:#F9F9F9;
+                    color:#333333;
                     padding:20px;
                     border-radius:12px;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
                     margin-top:10px;
                 ">
                 <h4>{tgt_lang}:</h4>
@@ -142,4 +120,3 @@ if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
             st.write(f"{i+1}. **{tgt_lang}**: {trans}")
-
