@@ -34,8 +34,26 @@ html, body, [class*="css"]  {
 </style>
 """, unsafe_allow_html=True)
 
+# Title and sidebar info
 st.title("🌐 SpeakEasy")
 st.write("Translate text between languages instantly!")
+
+# Info box pointing to sidebar
+st.markdown("""
+<div style="
+    background-color:#E0F7FA;
+    color:#006064;
+    padding:15px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+">
+<div style="margin-right:10px; font-size:20px;">⬅️</div>
+<div>Use the <strong>left sidebar</strong> to select source/target languages, multi-language options, or swap languages.</div>
+</div>
+""", unsafe_allow_html=True)
 
 # Supported languages (expanded)
 language_codes = {
