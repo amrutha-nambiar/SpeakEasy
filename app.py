@@ -1,5 +1,5 @@
 import streamlit as st
-from deep_translator import GoogleTranslator
+from deep_translator import GoogleTranslator, exceptions
 
 # Page config
 st.set_page_config(
@@ -8,7 +8,7 @@ st.set_page_config(
     page_icon="🌐"
 )
 
-# Custom styling
+# Styling with markdown
 st.markdown(
     """
     <style>
@@ -19,21 +19,15 @@ st.markdown(
         width: 100%;
         font-size: 18px;
         border-radius: 10px;
+        margin-top: 10px;
     }
     .stTextArea textarea {
         font-size: 16px;
         height: 120px;
-        background-color: #f0f0f0;
     }
     .stTextInput input {
         font-size: 16px;
         height: 40px;
-    }
-    .stSuccess {
-        background-color: #e0ffe0 !important;
-        color: black !important;
-        padding: 10px;
-        border-radius: 8px;
     }
     </style>
     """,
@@ -43,21 +37,55 @@ st.markdown(
 st.title("🌐 SpeakEasy")
 st.write("Translate text between languages instantly!")
 
+# Language codes supported by deep-translator
+language_codes = {
+    "English": "en",
+    "Hindi": "hi",
+    "French": "fr",
+    "Spanish": "es",
+    "German": "de",
+    "Chinese (Simplified)": "zh-CN",
+    "Japanese": "ja",
+    "Russian": "ru",
+    "Arabic": "ar",
+    # add more languages if needed
+}
+
+language_options = list(language_codes.keys())
+
 # User input
 text = st.text_area("Enter text to translate:")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    source_lang = st.text_input("Source language (e.g., en for English)", value="auto")
+    source_lang = st.selectbox("Source language", ["auto"] + language_options, index=0)
 
 with col2:
-    target_lang = st.text_input("Target language (e.g., hi for Hindi)", value="hi")
+    target_lang = st.selectbox("Target language", language_options, index=1)  # default: Hindi
 
 # Translate button
 if st.button("Translate") and text:
     try:
-        translation = GoogleTranslator(source=source_lang, target=target_lang).translate(text)
-        st.success(f"**Translated Text:**\n\n{translation}", icon="✅")
+        src_code = "auto" if source_lang == "auto" else language_codes[source_lang]
+        tgt_code = language_codes[target_lang]
+
+        translation = GoogleTranslator(source=src_code, target=tgt_code).translate(text)
+        
+        # Display translation in a nice card
+        st.markdown(
+            f"""
+            <div style="background-color:#00796B;color:white;padding:15px;
+                        border-radius:12px;margin-top:10px">
+            <h4>Translated Text:</h4>
+            <p style="font-size:18px">{translation}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    except exceptions.NotValidPayload as e:
+        st.error(f"Invalid text: {e}")
+    except exceptions.LanguageNotSupportedException as e:
+        st.error(f"Unsupported language: {e}")
     except Exception as e:
         st.error(f"Error: {e}")
