@@ -89,7 +89,7 @@ st.markdown("""
     margin-bottom: 20px;
 ">
 <div style="margin-right:10px; font-size:20px;">⬅️</div>
-<div>Use the <strong>left sidebar</strong> for Settings.</div>
+<div>Navigate to the <strong>left sidebar</strong> for Settings.</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -171,6 +171,7 @@ if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
             st.write(f"{i+1}. **{tgt_lang}**: {trans}")
+
 
 
 
