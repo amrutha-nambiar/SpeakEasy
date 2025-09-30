@@ -2,7 +2,7 @@ import streamlit as st
 from deep_translator import GoogleTranslator, exceptions
 from io import BytesIO
 
- gTTS (Text-to-Speech)
+
 try:
     from gtts import gTTS
     tts_enabled = True
