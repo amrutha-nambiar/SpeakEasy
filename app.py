@@ -2,7 +2,7 @@ import streamlit as st
 from deep_translator import GoogleTranslator, exceptions
 from io import BytesIO
 
-# Optional: gTTS (Text-to-Speech) safe import
+# Optional: gTTS (Text-to-Speech)
 try:
     from gtts import gTTS
     tts_enabled = True
@@ -13,13 +13,15 @@ except ModuleNotFoundError:
 # Page config
 st.set_page_config(page_title="🌐 SpeakEasy", layout="wide", page_icon="🌐")
 
-# Elegant Styling
+# Elegant Styling with Gradient Header
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 html, body, [class*="css"]  {
     font-family: 'Roboto', sans-serif;
 }
+
 .stButton>button {
     background-color: #008080;
     color: white;
@@ -29,16 +31,51 @@ html, body, [class*="css"]  {
     border-radius: 10px;
     margin-top: 5px;
 }
+
 .stTextArea textarea { font-size: 16px; height: 120px; }
 .stTextInput input { font-size: 16px; height: 40px; }
+
+.header-container {
+    background: linear-gradient(90deg, #008080, #20B2AA);
+    padding: 25px;
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-container img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.header-container h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.header-container p {
+    margin: 0;
+    font-size: 18px;
+    opacity: 0.9;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# Title and sidebar info
-st.title("🌐 SpeakEasy")
-st.write("Translate text between languages instantly!")
+# Header with logo and gradient
+st.markdown("""
+<div class="header-container">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/globe.png" alt="Logo">
+    <div>
+        <h1>🌐 SpeakEasy</h1>
+        <p>Translate text between languages instantly!</p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# Info box pointing to sidebar
+# Sidebar info box
 st.markdown("""
 <div style="
     background-color:#E0F7FA;
@@ -49,13 +86,14 @@ st.markdown("""
     font-weight:500;
     display:flex;
     align-items:center;
+    margin-bottom: 20px;
 ">
 <div style="margin-right:10px; font-size:20px;">⬅️</div>
 <div>Use the <strong>left sidebar</strong> to select source/target languages, multi-language options, or swap languages.</div>
 </div>
 """, unsafe_allow_html=True)
 
-# Supported languages (expanded)
+# Supported languages
 language_codes = {
     "English": "en", "Hindi": "hi", "French": "fr", "Spanish": "es",
     "German": "de", "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW",
@@ -68,11 +106,11 @@ language_codes = {
 }
 language_options = list(language_codes.keys())
 
-# Session state for history
+# Session state
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# Sidebar for settings
+# Sidebar settings
 with st.sidebar:
     st.header("⚙️ Settings")
     source_lang = st.selectbox("Source language", ["auto"] + language_options, index=0)
@@ -85,19 +123,17 @@ with st.sidebar:
 # User input
 text = st.text_area("Enter text to translate:")
 
-# Main translation button
+# Translation button
 if st.button("Translate") and text:
     src_code = "auto" if source_lang == "auto" else language_codes[source_lang]
-
     st.header("📝 Translation Results")
+
     for tgt_lang in multi_targets:
         try:
             tgt_code = language_codes[tgt_lang]
-
-            # Translate
             translation = GoogleTranslator(source=src_code, target=tgt_code).translate(text)
 
-            # Display translation in elegant card
+            # Elegant card
             st.markdown(f"""
                 <div style="
                     background-color:#F9F9F9;
@@ -112,10 +148,8 @@ if st.button("Translate") and text:
                 </div>
             """, unsafe_allow_html=True)
 
-            # Save history
             st.session_state.history.append((text, tgt_lang, translation))
 
-            # Text-to-Speech
             if tts_enabled:
                 tts = gTTS(translation, lang=tgt_code)
                 audio_bytes = BytesIO()
@@ -123,7 +157,6 @@ if st.button("Translate") and text:
                 audio_bytes.seek(0)
                 st.audio(audio_bytes, format="audio/mp3")
 
-            # Download translation
             st.download_button(f"📥 Download {tgt_lang} Translation", translation, file_name=f"translation_{tgt_lang}.txt")
 
         except exceptions.NotValidPayload as e:
@@ -133,7 +166,7 @@ if st.button("Translate") and text:
         except Exception as e:
             st.error(f"Error: {e}")
 
-# Recent translations in expandable panel
+# Recent translations
 if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
