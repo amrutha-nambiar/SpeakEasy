@@ -69,7 +69,7 @@ st.markdown("""
 <div class="header-container">
     <img src="https://img.icons8.com/ios-filled/100/ffffff/globe.png" alt="Logo">
     <div>
-        <h1>🌐 SpeakEasy</h1>
+        <h1>SpeakEasy</h1>
         <p>Translate text between languages instantly!</p>
     </div>
 </div>
@@ -171,4 +171,5 @@ if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
             st.write(f"{i+1}. **{tgt_lang}**: {trans}")
+
 
