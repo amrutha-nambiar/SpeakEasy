@@ -10,14 +10,6 @@ except ModuleNotFoundError:
     tts_enabled = False
     st.warning("Text-to-Speech not available. Install gTTS to enable audio feature.")
 
-# Language detection
-try:
-    from langdetect import detect
-    detect_enabled = True
-except ModuleNotFoundError:
-    detect_enabled = False
-    st.warning("Language detection not available. Install langdetect to enable it.")
-
 # Page config
 st.set_page_config(page_title="🌐 SpeakEasy", layout="centered", page_icon="🌐")
 
@@ -68,12 +60,6 @@ if st.button("Translate") and text:
     for tgt_lang in multi_targets:
         try:
             tgt_code = language_codes[tgt_lang]
-
-            # Detect language if auto and langdetect available
-            if source_lang == "auto" and detect_enabled:
-                detected_lang = detect(text)
-                st.info(f"Detected Language: {detected_lang}")
-                src_code = detected_lang
 
             # Translate
             translation = GoogleTranslator(source=src_code, target=tgt_code).translate(text)
