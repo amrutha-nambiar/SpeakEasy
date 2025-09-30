@@ -1,7 +1,5 @@
 import streamlit as st
-from googletrans import Translator, LANGUAGES
-
-translator = Translator()
+from deep_translator import GoogleTranslator
 
 # Page config
 st.set_page_config(
@@ -10,7 +8,7 @@ st.set_page_config(
     page_icon="🌐"
 )
 
-# Styling with markdown
+# Custom styling
 st.markdown(
     """
     <style>
@@ -21,15 +19,21 @@ st.markdown(
         width: 100%;
         font-size: 18px;
         border-radius: 10px;
-        margin-top: 10px;
     }
     .stTextArea textarea {
         font-size: 16px;
         height: 120px;
+        background-color: #f0f0f0;
     }
     .stTextInput input {
         font-size: 16px;
         height: 40px;
+    }
+    .stSuccess {
+        background-color: #e0ffe0 !important;
+        color: black !important;
+        padding: 10px;
+        border-radius: 8px;
     }
     </style>
     """,
@@ -39,40 +43,21 @@ st.markdown(
 st.title("🌐 SpeakEasy")
 st.write("Translate text between languages instantly!")
 
-# Language options
-language_options = sorted(LANGUAGES.values())
-lang_codes = {v: k for k, v in LANGUAGES.items()}
-
 # User input
 text = st.text_area("Enter text to translate:")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    source_lang = st.selectbox("Source language", ["auto"] + language_options, index=0)
+    source_lang = st.text_input("Source language (e.g., en for English)", value="auto")
 
 with col2:
-    target_lang = st.selectbox("Target language", language_options, index=21)  # default: Hindi
+    target_lang = st.text_input("Target language (e.g., hi for Hindi)", value="hi")
 
 # Translate button
 if st.button("Translate") and text:
     try:
-        src_code = "auto" if source_lang == "auto" else lang_codes[source_lang]
-        tgt_code = lang_codes[target_lang]
-
-        translation = translator.translate(text, src=src_code, dest=tgt_code)
-        translated_text = translation.text
-
-        # Display translation in a nice card
-        st.markdown(
-            f"""
-            <div style="background-color:#00796B;color:white;padding:15px;
-                        border-radius:12px;margin-top:10px">
-            <h4>Translated Text:</h4>
-            <p style="font-size:18px">{translated_text}</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        translation = GoogleTranslator(source=source_lang, target=target_lang).translate(text)
+        st.success(f"**Translated Text:**\n\n{translation}", icon="✅")
     except Exception as e:
         st.error(f"Error: {e}")
