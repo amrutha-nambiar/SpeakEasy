@@ -11,14 +11,26 @@ except ModuleNotFoundError:
     st.warning("Text-to-Speech not available. Install gTTS to enable audio feature.")
 
 # Page config
-st.set_page_config(page_title="🌐 SpeakEasy", layout="centered", page_icon="🌐")
+st.set_page_config(page_title="🌐 SpeakEasy", layout="wide", page_icon="🌐")
 
-# Styling
+# Custom Fonts and Styling
 st.markdown("""
 <style>
-.stButton>button {background-color: #4CAF50;color: white;height: 3em;width: 100%;font-size: 18px;border-radius: 10px;margin-top: 10px;}
-.stTextArea textarea {font-size: 16px; height: 120px;}
-.stTextInput input {font-size: 16px; height: 40px;}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+html, body, [class*="css"]  {
+    font-family: 'Roboto', sans-serif;
+}
+.stButton>button {
+    background-color: #4CAF50;
+    color: white;
+    height: 3em;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+.stTextArea textarea { font-size: 16px; height: 120px; }
+.stTextInput input { font-size: 16px; height: 40px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -37,26 +49,24 @@ language_options = list(language_codes.keys())
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# User input
-text = st.text_area("Enter text to translate:")
-
-col1, col2, col3 = st.columns([1,1,1])
-with col1:
+# Sidebar for settings
+with st.sidebar:
+    st.header("⚙️ Settings")
     source_lang = st.selectbox("Source language", ["auto"] + language_options, index=0)
-with col2:
     target_lang = st.selectbox("Target language", language_options, index=1)
-with col3:
-    if st.button("🔄 Swap"):
+    multi_targets = st.multiselect("Translate into multiple languages:", language_options, default=[target_lang])
+    if st.button("🔄 Swap Languages"):
         source_lang, target_lang = target_lang, source_lang
         st.experimental_rerun()
 
-# Multi-language selection
-multi_targets = st.multiselect("Translate into multiple languages:", language_options, default=[target_lang])
+# User input
+text = st.text_area("Enter text to translate:")
 
-# Translate button
+# Main translation button
 if st.button("Translate") and text:
     src_code = "auto" if source_lang == "auto" else language_codes[source_lang]
 
+    st.header("📝 Translation Results")
     for tgt_lang in multi_targets:
         try:
             tgt_code = language_codes[tgt_lang]
@@ -64,9 +74,16 @@ if st.button("Translate") and text:
             # Translate
             translation = GoogleTranslator(source=src_code, target=tgt_code).translate(text)
 
-            # Display translation
+            # Display translation in modern card
             st.markdown(f"""
-                <div style="background-color:#00796B;color:white;padding:15px;border-radius:12px;margin-top:10px">
+                <div style="
+                    background-color:#FFFFFF;
+                    color:#000000;
+                    padding:20px;
+                    border-radius:12px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    margin-top:10px;
+                ">
                 <h4>{tgt_lang}:</h4>
                 <p style="font-size:18px">{translation}</p>
                 </div>
@@ -75,7 +92,7 @@ if st.button("Translate") and text:
             # Save history
             st.session_state.history.append((text, tgt_lang, translation))
 
-            # Text-to-Speech if enabled
+            # Text-to-Speech
             if tts_enabled:
                 tts = gTTS(translation, lang=tgt_code)
                 audio_bytes = BytesIO()
@@ -83,8 +100,8 @@ if st.button("Translate") and text:
                 audio_bytes.seek(0)
                 st.audio(audio_bytes, format="audio/mp3")
 
-            # Download button
-            st.download_button(f"Download {tgt_lang} Translation", translation, file_name=f"translation_{tgt_lang}.txt")
+            # Download translation
+            st.download_button(f"📥 Download {tgt_lang} Translation", translation, file_name=f"translation_{tgt_lang}.txt")
 
         except exceptions.NotValidPayload as e:
             st.error(f"Invalid text: {e}")
@@ -93,8 +110,8 @@ if st.button("Translate") and text:
         except Exception as e:
             st.error(f"Error: {e}")
 
-# Display recent history
+# Recent translations in expandable panel
 if st.session_state.history:
-    st.subheader("Recent Translations")
-    for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
-        st.write(f"{i+1}. **{tgt_lang}**: {trans}")
+    with st.expander("📜 Recent Translations"):
+        for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
+            st.write(f"{i+1}. **{tgt_lang}**: {trans}")
