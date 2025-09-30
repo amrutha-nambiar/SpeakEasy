@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     st.warning("Text-to-Speech not available. Install gTTS to enable audio feature.")
 
 # Page config
-st.set_page_config(page_title="🌐 SpeakEasy", layout="wide", page_icon="🌐")
+st.set_page_config(page_title="SpeakEasy", layout="wide", page_icon="🌐")
 
 # Elegant Styling with Gradient Header
 st.markdown("""
@@ -171,3 +171,4 @@ if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
             st.write(f"{i+1}. **{tgt_lang}**: {trans}")
+
