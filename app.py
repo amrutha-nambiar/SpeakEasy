@@ -39,10 +39,37 @@ st.write("Translate text between languages instantly!")
 
 # Supported languages
 language_codes = {
-    "English": "en", "Hindi": "hi", "French": "fr", "Spanish": "es",
-    "German": "de", "Chinese (Simplified)": "zh-CN", "Japanese": "ja",
-    "Russian": "ru", "Arabic": "ar"
+    "English": "en",
+    "Hindi": "hi",
+    "French": "fr",
+    "Spanish": "es",
+    "German": "de",
+    "Chinese (Simplified)": "zh-CN",
+    "Chinese (Traditional)": "zh-TW",
+    "Japanese": "ja",
+    "Korean": "ko",
+    "Russian": "ru",
+    "Arabic": "ar",
+    "Portuguese": "pt",
+    "Italian": "it",
+    "Turkish": "tr",
+    "Dutch": "nl",
+    "Swedish": "sv",
+    "Norwegian": "no",
+    "Danish": "da",
+    "Finnish": "fi",
+    "Polish": "pl",
+    "Thai": "th",
+    "Vietnamese": "vi",
+    "Indonesian": "id",
+    "Greek": "el",
+    "Hebrew": "he",
+    "Bengali": "bn",
+    "Urdu": "ur",
+    "Malay": "ms",
+    "Filipino": "tl"
 }
+
 language_options = list(language_codes.keys())
 
 # Session state for history
@@ -115,3 +142,4 @@ if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
             st.write(f"{i+1}. **{tgt_lang}**: {trans}")
+
