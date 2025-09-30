@@ -2,7 +2,7 @@ import streamlit as st
 from deep_translator import GoogleTranslator, exceptions
 from io import BytesIO
 
-# Optional: gTTS (Text-to-Speech)
+ gTTS (Text-to-Speech)
 try:
     from gtts import gTTS
     tts_enabled = True
@@ -171,6 +171,7 @@ if st.session_state.history:
     with st.expander("📜 Recent Translations"):
         for i, (src_text, tgt_lang, trans) in enumerate(reversed(st.session_state.history[-5:])):
             st.write(f"{i+1}. **{tgt_lang}**: {trans}")
+
 
 
 
